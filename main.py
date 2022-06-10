@@ -1,12 +1,11 @@
 from tkinter import *
 import tkinter as tk
-from geopy.geocoders import *
-from geopy.geocoders import Nominatim
-from tkinter import ttk,messagebox
-from timezonefinder import TimezoneFinder
-from datetime import datetime
+from tkinter import ttk, messagebox
 import requests
 import pytz
+from timezonefinder import TimezoneFinder
+from datetime import datetime
+from geopy.geocoders import Nominatim
 
 root = Tk()
 root.title("Weather App")
@@ -19,6 +18,7 @@ def getWeather():
         city = textfield.get()
         api = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=6fe6f8dc606fd5d52f7429fbeca908a8"
 
+        # 날씨 정보 출력하기
         json_data = requests.get(api).json()
         condition = json_data['weather'][0]['main']
         description = json_data['weather'][0]['description']
@@ -27,14 +27,28 @@ def getWeather():
         humidity = json_data['main']['humidity']
         wind = json_data['wind']['speed']
 
-        t.config(text=(temp, "℃"))
+        # t.config(text=(temp, "℃"))
         c.config(text=(condition, "|", "FEELS", "LIKE", temp, "℃"))
+
+        if temp >= 0 and temp <= 15:
+            t = Label(font=("arial", 70, "bold"), fg="white")
+            t.config(text=(temp, "℃"))
+            t.place(x=370, y=150)
+        elif temp >= 16 and temp <= 30:
+            t = Label(font=("arial", 70, "bold"), fg="green")
+            t.config(text=(temp, "℃"))
+            t.place(x=370, y=150)
+        elif temp >= 31:
+            t = Label(font=("arial", 70, "bold"), fg="#ee666d")
+            t.config(text=(temp, "℃"))
+            t.place(x=370, y=150)
 
         w.config(text=wind)
         h.config(text=humidity)
         d.config(text=description)
         p.config(text=pressure)
-    except Exception as e:
+
+    except Exception:
         messagebox.showerror("정확한")
         textfield.focus()
 
@@ -71,8 +85,8 @@ label_des.place(x=430, y=400)
 label_press = Label(root, text="PRESSURE", font=("Helvetica", 15, 'bold'), fg="white", bg="#1ab5ef")
 label_press.place(x=650, y=400)
 
-t = Label(font=("arial", 70, "bold"), fg="#ee666d")
-t.place(x=370, y=150)
+# t = Label(font=("arial", 70, "bold"), fg="#ee666d")
+# t.place(x=370, y=150)
 c = Label(font=("arial", 15, "bold"))
 c.place(x=370, y=250)
 
